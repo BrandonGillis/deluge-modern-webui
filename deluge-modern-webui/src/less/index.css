@@ -1,0 +1,23 @@
+/**
+* DEFAULT BODY STYLE
+*/
+.bg-white {
+  background-color: white !important;
+}
+.navbar-light {
+  border-bottom: 2px solid #d9d9d9;
+}
+.logo {
+  height: 35px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+}
+a.blue:hover {
+  color: #0b64a7 !important;
+}
+body {
+  background-color: #E8E8E8;
+}
+.blue {
+  color: #279AF1 !important;
+}
