@@ -38,6 +38,13 @@ export default class TorrentGrid extends Component {
     }
 
     componentDidMount() {
+        this.getTorrents();
+        this.interval = setInterval(() => {
+            this.getTorrents();
+        }, 2000);
+    }
+
+    getTorrents() {
         global.api
             .post('json', {
                 'method': 'web.update_ui',
@@ -88,17 +95,13 @@ export default class TorrentGrid extends Component {
                 // create a new "State" object without mutating 
                 // the original State object. 
                 const newState = Object.assign({}, this.state, {
-                  rows: newRows
+                    rows: newRows
                 });
 
                 // store the new state object in the component's state
                 this.setState(newState);
             })
             .catch(error => console.log(error));
-    }
-
-    getTorrentRows() {
-
     }
 
     render() {
