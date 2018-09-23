@@ -36,7 +36,7 @@ export default class Navigation extends Component {
             <div>
                 <Navbar color="white" light expand="md">
                     <NavbarBrand href="#" className="blue font-weight-bold mr-0 mr-md-4"><img className="img-fluid logo" src={Logo} alt="Deluge" />Deluge</NavbarBrand>
-                    <div class="d-flex flex-row float-left">
+                    <div className="d-flex flex-row float-left">
                         <Nav navbar className="flex-row justify-content-start">
                             <div className="d-flex pr-md-3">
                                 <NavItem>
