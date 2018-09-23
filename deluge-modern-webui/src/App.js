@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import Navigation from './components/Navigation';
 import TorrentGrid from './components/TorrentGrid';
+import Login from './components/Login';
 import axios from "axios";
 
 var server = "http://lvh.me:8112/";
@@ -14,24 +15,40 @@ var server = "http://lvh.me:8112/";
       }
     });
 
-
 class App extends Component {
 
-  state = {
-    loggedIn: false
-  };
+  constructor(props) {
+    super(props)
+    // Bind the this context to the handler function
+    this.loginHandler = this.loginHandler.bind(this);
 
-  componentDidMount() {
+    // Set some state
+    this.state = {
+      loggedIn: false,
+      loginError: false
+    };
+  }
+
+  loginHandler(password) {
     global.api
       .post('json', {
-          'method': 'auth.login',
-          'params': ['deluge'],
-          'id': 1
+        'method': 'auth.login',
+        'params': [password],
+        'id': 1
       }).then(response => {
-
-        console.log(response.data);
+        var logged = response.data.result;
+        if (logged) {
+          this.setState({
+            loggedIn: true
+          });
+        } else {
+          this.setState({
+            loggedIn: false,
+            loginError: true
+          });
+        }
       })
-      .catch(error => console.log(error));
+      .catch(error => this.setState({ loginError: true }));
   }
 
   render() {
@@ -39,7 +56,8 @@ class App extends Component {
       <div className="App">
         <Navigation />
         <div className="container-fluid">
-          <TorrentGrid />
+          {!this.state.loggedIn && <Login loginHandler={this.loginHandler} error={this.state.loginError} />}
+          {this.state.loggedIn && <TorrentGrid />}
         </div>
       </div>
     );
