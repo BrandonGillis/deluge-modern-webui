@@ -1,6 +1,12 @@
 /**
 * DEFAULT BODY STYLE
 */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto'), local('Roboto-Regular'), url(https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4mxP.ttf) format('truetype');
+}
 .bg-white {
   background-color: white !important;
 }
@@ -15,9 +21,20 @@
 a.blue:hover {
   color: #0b64a7 !important;
 }
+.table-white {
+  background-color: white;
+}
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #F9F9F9;
+}
 body {
   background-color: #E8E8E8;
+  color: #7A7882;
+  font-family: 'Roboto', 'Open Sans';
 }
 .blue {
   color: #279AF1 !important;
+}
+.text-muted {
+  color: #c8c7cc !important;
 }

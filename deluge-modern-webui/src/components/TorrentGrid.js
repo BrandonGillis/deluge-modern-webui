@@ -2,16 +2,65 @@ import React, { Component } from 'react';
 import { DataTypeProvider } from '@devexpress/dx-react-grid';
 import { Grid, Table, TableHeaderRow, TableColumnResizing } from '@devexpress/dx-react-grid-bootstrap4';
 import { Progress } from 'reactstrap';
+const prettyBytes = require('pretty-bytes');
 
-const ProgressFormatter = ({ value }) => (
-        <Progress value={value}>{value.toFixed(2)}%</Progress>
+const SpeedFormatter = ({ value }) => (
+        <div className="col-12">
+            <div className="row">
+                <div className="col-12">
+                    {value[0] > 0 ? prettyBytes(value[0]) : prettyBytes(0)}/sec <small>(down)</small> -&nbsp;
+                    {value[1] > 0 ? prettyBytes(value[0]) : prettyBytes(0)}/sec <small>(up)</small>
+                </div>
+            </div>
+            <div className="row">
+            <div className="col-12"><small className="text-muted">{value[2]} PEERS / {value[3]} LEECHERS</small></div>
+            </div>
+        </div>
 );
 
-const ProgressTypeProvider = props => (
+const SpeedTypeProvider = props => (
     <DataTypeProvider
-        formatterComponent={ProgressFormatter}
+        formatterComponent={SpeedFormatter}
         {...props}
     />
+);
+
+const SizeFormatter = ({ value }) => (
+    <span>{prettyBytes(value)}</span>
+);
+
+const SizeTypeProvider = props => (
+    <DataTypeProvider
+        formatterComponent={SizeFormatter}
+        {...props}
+    />
+);
+
+const FileFormatter = ({ value }) => (
+    <div className="col-12">
+        <div className="row">
+            <div className="text-left text-truncate col">{value[0]}</div>
+            <div className="text-right text-muted col-auto pl-0">{value[1].toFixed(0)}%</div>
+        </div>
+        <Progress value={value[1]} style={{height: 5}} />
+    </div>
+);
+
+const FileTypeProvider = props => (
+    <DataTypeProvider
+        formatterComponent={FileFormatter}
+        {...props}
+    />
+);
+
+
+const TableComponent = ({ ...restProps }) => (
+    <div className="card">
+        <Table.Table
+            {...restProps}
+            className="table-striped table-white table-hover"
+        />
+    </div>
 );
 
 export default class TorrentGrid extends Component {
@@ -20,19 +69,19 @@ export default class TorrentGrid extends Component {
 
         this.state = {
             columns: [
-                { name: 'name', title: 'Name' },
-                { name: 'size', title: 'Size' },
-                { name: 'progress', title: 'Progress' },
+                { name: 'file', title: 'FILE' },
+                { name: 'size', title: 'SIZE' },
+                { name: 'speed', title: 'SPEED' },
             ],
             defaultColumnWidths: [
-                { columnName: 'name', width: 320 },
+                { columnName: 'file', width: 320 },
                 { columnName: 'size', width: 100 },
-                { columnName: 'progress', width: 180 },
+                { columnName: 'speed', width: 180 },
             ],
-            progressColumns: ['progress'],
+            fileColumns: ['file'],
+            sizeColumns: ['size'],
+            speedColumns: ['speed'],
             rows: [
-                // { name: 'Barry Seal, American Traffic 2017 1080P FR EN X264 AC3-mHDgz.mkv', size: '2.7 GiB', progress: 53 },
-                // { name: 'marvels.cloak.and.dagger.s01e10.final.french.720p.webrip.x264-amb3r.mkv', size: '937.2 MiB', progress: 82 },
             ]
         };
     }
@@ -86,9 +135,9 @@ export default class TorrentGrid extends Component {
                 const newRows = Object.keys(torrents).map(function (key) {
                     var t = torrents[key];
                     return {
-                        name: t.name,
+                        file: [t.name, t.progress],
                         size: t.total_wanted,
-                        progress: t.progress
+                        speed: [t.download_payload_rate, t.upload_payload_rate, t.num_peers, t.num_seeds]
                     }
                 })
                 console.log(newRows);
@@ -105,17 +154,23 @@ export default class TorrentGrid extends Component {
     }
 
     render() {
-        const { rows, columns, defaultColumnWidths, progressColumns } = this.state;
+        const { rows, columns, defaultColumnWidths, speedColumns, sizeColumns, fileColumns } = this.state;
 
         return (
             <Grid
                 rows={rows}
                 columns={columns}
             >
-                <ProgressTypeProvider
-                    for={progressColumns}
+                <FileTypeProvider
+                    for={fileColumns}
                 />
-                <Table />
+                <SizeTypeProvider
+                    for={sizeColumns}
+                />
+                <SpeedTypeProvider
+                    for={speedColumns}
+                />
+                <Table tableComponent={TableComponent} />
                 <TableColumnResizing defaultColumnWidths={defaultColumnWidths} />
                 <TableHeaderRow />
             </Grid>

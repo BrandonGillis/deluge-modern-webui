@@ -2,15 +2,24 @@
 * DEFAULT BODY STYLE
 */
 
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
 @import './shared.less';
 @import './components/navbar.less';
+@import './components/table.less';
 
 @background-color: #E8E8E8;
 
 body {
 	background-color: @background-color;
+	color: @gray;
+	font-family: 'Roboto', 'Open Sans';
 }
 
 .blue {
 	color: @blue !important;
+}
+
+.text-muted {
+	color: @light-gray !important;
 }
