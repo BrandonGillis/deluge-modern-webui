@@ -7,6 +7,18 @@
   font-weight: 400;
   src: local('Roboto'), local('Roboto-Regular'), url(https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4mxP.ttf) format('truetype');
 }
+.purple {
+  color: #A46FEB !important;
+}
+.bg-purple {
+  background-color: #A46FEB !important;
+}
+.blue {
+  color: #279AF1 !important;
+}
+.bg-blue {
+  background-color: #279AF1 !important;
+}
 .bg-white {
   background-color: white !important;
 }

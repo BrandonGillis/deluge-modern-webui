@@ -1,57 +1,11 @@
 import React, { Component } from 'react';
-import { DataTypeProvider } from '@devexpress/dx-react-grid';
 import { Grid, Table, TableHeaderRow, TableColumnResizing } from '@devexpress/dx-react-grid-bootstrap4';
-import { Progress } from 'reactstrap';
-const prettyBytes = require('pretty-bytes');
+import SpeedTypeProvider from './TorrentGrid/Speed/SpeedTypeProvider';
+import SizeTypeProvider from './TorrentGrid/Size/SizeTypeProvider';
+import FileTypeProvider from './TorrentGrid/File/FileTypeProvider';
 
-const SpeedFormatter = ({ value }) => (
-        <div className="col-12">
-            <div className="row">
-                <div className="col-12">
-                    {value[0] > 0 ? prettyBytes(value[0]) : prettyBytes(0)}/sec <small>(down)</small> -&nbsp;
-                    {value[1] > 0 ? prettyBytes(value[0]) : prettyBytes(0)}/sec <small>(up)</small>
-                </div>
-            </div>
-            <div className="row">
-            <div className="col-12"><small className="text-muted">{value[2]} PEERS / {value[3]} LEECHERS</small></div>
-            </div>
-        </div>
-);
-
-const SpeedTypeProvider = props => (
-    <DataTypeProvider
-        formatterComponent={SpeedFormatter}
-        {...props}
-    />
-);
-
-const SizeFormatter = ({ value }) => (
-    <span>{prettyBytes(value)}</span>
-);
-
-const SizeTypeProvider = props => (
-    <DataTypeProvider
-        formatterComponent={SizeFormatter}
-        {...props}
-    />
-);
-
-const FileFormatter = ({ value }) => (
-    <div className="col-12">
-        <div className="row">
-            <div className="text-left text-truncate col">{value[0]}</div>
-            <div className="text-right text-muted col-auto pl-0">{value[1].toFixed(0)}%</div>
-        </div>
-        <Progress value={value[1]} style={{height: 5}} />
-    </div>
-);
-
-const FileTypeProvider = props => (
-    <DataTypeProvider
-        formatterComponent={FileFormatter}
-        {...props}
-    />
-);
+// {method: "core.resume_torrent", params: [["3b1d85f8780ef8c4d8538f809a7a63fc5299318e"]], id: 22}
+// {method: "core.pause_torrent", params: [["3b1d85f8780ef8c4d8538f809a7a63fc5299318e"]], id: 28}
 
 
 const TableComponent = ({ ...restProps }) => (
@@ -135,7 +89,7 @@ export default class TorrentGrid extends Component {
                 const newRows = Object.keys(torrents).map(function (key) {
                     var t = torrents[key];
                     return {
-                        file: [t.name, t.progress],
+                        file: { name: t.name, progress: t.progress, state: t.state },
                         size: t.total_wanted,
                         speed: [t.download_payload_rate, t.upload_payload_rate, t.num_peers, t.num_seeds]
                     }
