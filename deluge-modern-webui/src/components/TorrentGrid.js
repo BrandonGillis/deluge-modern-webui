@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Grid, Table, TableHeaderRow, TableColumnResizing } from '@devexpress/dx-react-grid-bootstrap4';
+import { SelectionState } from '@devexpress/dx-react-grid';
+import { Grid, Table, TableHeaderRow, TableColumnResizing, TableSelection } from '@devexpress/dx-react-grid-bootstrap4';
 import SpeedTypeProvider from './TorrentGrid/Speed/SpeedTypeProvider';
 import SizeTypeProvider from './TorrentGrid/Size/SizeTypeProvider';
 import FileTypeProvider from './TorrentGrid/File/FileTypeProvider';
@@ -38,11 +39,12 @@ export default class TorrentGrid extends Component {
             fileColumns: ['file'],
             sizeColumns: ['size'],
             speedColumns: ['speed'],
-            rows: [
-            ]
+            rows: [],
+            selection: []
         };
 
         this.onTorrentsChange = this.onTorrentsChange.bind(this);
+        this.onTorrentSelection = this.onTorrentSelection.bind(this);
     }
 
     componentDidMount() {
@@ -64,6 +66,7 @@ export default class TorrentGrid extends Component {
         const newRows = Object.keys(torrents).map(function (key) {
             var t = torrents[key];
             return {
+                hash: key,
                 file: { name: t.name, progress: t.progress, state: t.state },
                 size: t.total_wanted,
                 speed: [t.download_payload_rate, t.upload_payload_rate, t.num_peers, t.num_seeds]
@@ -77,8 +80,20 @@ export default class TorrentGrid extends Component {
         this.setState(newState);
     }
 
+    onTorrentSelection(selection) {
+        const lastSelected = selection.find(selected => this.state.selection.indexOf(selected) === -1);
+
+        if (lastSelected !== undefined) {
+            this.setState({ selection: [lastSelected] });
+            ClientActions.selectTorrent(this.state.rows[lastSelected].hash);
+        } else {
+            this.setState({ selection: [] });
+        }
+
+    }
+
     render() {
-        const { rows, columns, defaultColumnWidths, speedColumns, sizeColumns, fileColumns } = this.state;
+        const { rows, columns, defaultColumnWidths, speedColumns, sizeColumns, fileColumns, selection } = this.state;
 
         return (
             <Grid
@@ -94,9 +109,18 @@ export default class TorrentGrid extends Component {
                 <SpeedTypeProvider
                     for={speedColumns}
                 />
+                <SelectionState
+                    selection={selection}
+                    onSelectionChange={this.onTorrentSelection}
+                />
                 <Table tableComponent={TableComponent} />
                 <TableColumnResizing defaultColumnWidths={defaultColumnWidths} />
                 <TableHeaderRow />
+                <TableSelection
+                    selectByRowClick
+                    highlightRow
+                    showSelectionColumn={false}
+                />
             </Grid>
         );
     }

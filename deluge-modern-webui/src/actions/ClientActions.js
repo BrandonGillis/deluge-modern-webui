@@ -47,6 +47,47 @@ const ClientActions = {
                 console.log(error);
             })
     },
+
+    pauseTorrent(hash) {
+        global.api
+            .post('json', {
+                'method': 'core.pause_torrent',
+                'params': [[hash]],
+                'id': 1
+            }).then(response => {
+                AppDispatcher.dispatch({
+                    type: ActionTypes.CLIENT_PAUSE_TORRENT_SUCCESS,
+                    data: hash
+                });
+            },
+            error => {
+                console.log(error);
+            })
+    },
+
+    resumeTorrent(hash) {
+        global.api
+            .post('json', {
+                'method': 'core.resume_torrent',
+                'params': [[hash]],
+                'id': 1
+            }).then(response => {
+                AppDispatcher.dispatch({
+                    type: ActionTypes.CLIENT_RESUME_TORRENT_SUCCESS,
+                    data: hash
+                });
+            },
+            error => {
+                console.log(error);
+            })
+    },
+
+    selectTorrent(selection) {
+        AppDispatcher.dispatch({
+            type: ActionTypes.CLIENT_SELECT_TORRENT,
+            data: selection
+        });
+    },
 };
 
 export default ClientActions;

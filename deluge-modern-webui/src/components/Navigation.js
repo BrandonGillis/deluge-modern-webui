@@ -15,20 +15,36 @@ import {
 import Logo from '../images/deluge-logo.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faTrash, faPause, faPlay, faChevronUp, faChevronDown, faCog } from '@fortawesome/free-solid-svg-icons'
+import ClientActions from '../actions/ClientActions';
+import TorrentStore from '../stores/TorrentStore';
 
 export default class Navigation extends Component {
     constructor(props) {
         super(props);
 
         this.toggle = this.toggle.bind(this);
+        this.pauseTorrent = this.pauseTorrent.bind(this);
+        this.resumeTorrent = this.resumeTorrent.bind(this);
+
         this.state = {
             isOpen: false
         };
     }
+
     toggle() {
         this.setState({
             isOpen: !this.state.isOpen
         });
+    }
+
+    pauseTorrent() {
+        let selectedTorrent = TorrentStore.getSelectedTorrent();
+        ClientActions.pauseTorrent(selectedTorrent);
+    }
+
+    resumeTorrent() {
+        let selectedTorrent = TorrentStore.getSelectedTorrent();
+        ClientActions.resumeTorrent(selectedTorrent);
     }
 
     render() {
@@ -46,12 +62,12 @@ export default class Navigation extends Component {
                                     <NavLink href="#" className="blue px-2"><FontAwesomeIcon icon={faTrash} /></NavLink>
                                 </NavItem>
                             </div>
-                            <div className="d-flex pr-md-3">
+                            <div className="d-flex pr-md-3" style={{ cursor: 'pointer' }}>
                                 <NavItem>
-                                    <NavLink href="#" className="px-2"><FontAwesomeIcon icon={faPlay} /></NavLink>
+                                    <NavLink className="px-2" onClick={this.resumeTorrent}><FontAwesomeIcon icon={faPlay} /></NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink href="#" className="px-2"><FontAwesomeIcon icon={faPause} /></NavLink>
+                                    <NavLink className="px-2" onClick={this.pauseTorrent}><FontAwesomeIcon icon={faPause} /></NavLink>
                                 </NavItem>
                             </div>
                             <NavItem>
